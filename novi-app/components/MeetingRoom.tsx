@@ -17,8 +17,9 @@ import { cn } from "@/lib/utils";
 
 // Dropdown menu components
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { LayoutList, Users } from "lucide-react";
+import { LayoutList, Rewind, Users } from "lucide-react";
 import EndCallButton from "./EndCallButton";
+import SessionPlayback from "./SessionPlayback";
 
 // Allowed layout types
 type CallLayoutType = 'grid' | 'speaker-left' |'speaker-right';
@@ -28,6 +29,8 @@ const MeetingRoom =() => {
     const [layout,setLayout]=useState<CallLayoutType>('speaker-left');
     // State to toggle participants list
     const [showParticipants, setShowParticipants] = useState(false);
+    // State to toggle session playback panel
+    const [showPlayback, setShowPlayback] = useState(false);
     // Router for navigation
     const router = useRouter();
     // Get current path (used for invite link)
@@ -80,6 +83,28 @@ const MeetingRoom =() => {
                     >
                     <CallParticipantsList onClose={() => setShowParticipants(false)} />
                 </div>
+
+                {/* Session Playback panel container */}
+                <div
+                    className={cn('h-[calc(100vh-86px)] hidden ml-2 overflow-y-auto', {
+                        'show-block': showPlayback,
+                    })}
+                    >
+                    <div className="h-full min-w-[350px] bg-[#1c1f2e] rounded-xl p-4">
+                        <div className="flex items-center justify-between mb-3">
+                            <h2 className="text-white font-bold text-lg flex items-center gap-2">
+                                ⏪ Session Playback
+                            </h2>
+                            <button
+                                onClick={() => setShowPlayback(false)}
+                                className="text-gray-400 hover:text-white transition-colors cursor-pointer text-xl"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <SessionPlayback />
+                    </div>
+                </div>
             </div>
 
             {/* call controls*/}
@@ -112,6 +137,18 @@ const MeetingRoom =() => {
                 <button onClick={() => setShowParticipants((prev) => !prev)}> 
                     <div className=" cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]  ">
                         <Users size={20} className="text-white" />
+                    </div>
+                </button>
+
+                {/* Session Playback toggle button */}
+                <button onClick={() => setShowPlayback((prev) => !prev)}> 
+                    <div className={cn(
+                        "cursor-pointer rounded-2xl px-4 py-2 transition-colors",
+                        showPlayback
+                            ? "bg-blue-600 hover:bg-blue-700"
+                            : "bg-[#19232d] hover:bg-[#4c535b]"
+                    )}>
+                        <Rewind size={20} className="text-white" />
                     </div>
                 </button>
                 <EndCallButton />   
